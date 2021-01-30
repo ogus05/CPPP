@@ -1,0 +1,41 @@
+#include <iostream>
+
+using namespace std;
+
+int add(int a, int b){
+	return a+b;
+}
+
+int sub(int a, int b){
+	return a-b;
+}
+
+int mul(int a, int b){
+	return a*b;
+}
+
+int main(){
+	cout << "2개의 숫자 입력" << endl;
+	int a, b;
+	cin >> a >> b;
+	cout << "0.add, 1.sub, 2.mul" << endl;
+	int op;
+	cin >> op;
+	//static binding (early binding)
+	switch(op){
+		case 0: cout << add(a,b) << endl; break;
+		case 1: cout << sub(a,b) << endl; break;
+		case 2: cout << mul(a,b) << endl; break;
+	}
+	
+	//dynamic binding (late binding)
+	int (*func)(int,int);
+	switch(op){
+		case 0: func = add; break;
+		case 1: func = sub; break;
+		case 2: func = mul; break;
+	}
+	cout << func(a,b) << endl;
+	
+	
+}

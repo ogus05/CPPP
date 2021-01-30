@@ -1,0 +1,33 @@
+#include <iostream>
+
+using namespace std;
+
+template<typename T, unsigned int T_len>			//템플릿 매개변수는 compile time에 알려져 있어야한다.
+class MyArray{
+public:
+	T* m_data;
+	MyArray(){
+		m_data = new T[T_len];
+	}
+	
+	T operator[](int index){
+		return m_data[index];
+	}
+	
+	int GetLen(){
+		return T_len;
+	}
+	
+	void print(){
+		for(int i = 0;i<T_len;i++){
+			cout << m_data[i] << endl;
+		}
+	}
+};
+
+int main(){
+	int i = 10;
+	MyArray<int,10> arr;								//여기에 10이 아닌 i를 넣게 되면 compile error가 발생한다.
+	cout << arr[2] << " " << arr.GetLen() << endl;
+	arr.print();
+}

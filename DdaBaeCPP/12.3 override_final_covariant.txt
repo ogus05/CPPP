@@ -1,0 +1,30 @@
+#include <iostream>
+
+using namespace std;
+
+//virtual keyword -> override를 가능하게한다, override keyword -> override했다는 것을 명시한다(꼭 필요한건 아니다.), final keyword -> derived class의 override를 금지시킨다.
+//covariant func -> derived class와 base class가 서로 각자 class type의 return value를 가지고 있으면 override가 가능하다.
+
+class A{
+	public:
+	void print(){cout << "A" << endl;}
+	virtual A* getThis(){			//<covariant func
+		cout << "getA" << endl;
+		return this;
+	}
+};
+
+class B: public A{
+	public:
+	virtual void print() {cout << "B" << endl;}
+	virtual B* getThis() override {		//<covariant func
+		cout << "getB" << endl;
+		return this;
+	}
+};
+
+int main(){
+	B b;
+	A &a = b;
+	a.getThis()->print();
+}

@@ -1,0 +1,41 @@
+#include <iostream>
+
+using namespace std;
+
+class A{
+public:
+	virtual void func1(){
+		cout << "func1" << endl;
+	}
+	
+	virtual void func2(){
+		cout << "func2" << endl;
+	}
+	
+	virtual void func3(){
+		cout << "func3" << endl;
+	}
+};
+
+class B : public A{
+public:
+	
+	void func2(){
+		cout << "B::func2" << endl;
+	}
+	
+	void func3(){
+		cout << "B::func3" << endl;
+	}
+};
+
+int main(){
+	//class 내부에 virtual function이 하나라도 있으면 virtual function pointer과 virtual function table이 생성되어 각 클래스의 size가 늘어난다.
+	cout << sizeof(A) << " " << sizeof(B) << endl;
+	//child instance가 생성되면 parnet instance의 vtable을 복사하고, 오버라이딩 된 함수만 주소가 새로 업데이트 되어 instance값에 들어간다.
+	A* a;
+	B* b = new B();
+	a = b;
+	b->func1();
+	a->func2();
+}

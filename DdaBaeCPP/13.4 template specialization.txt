@@ -1,0 +1,21 @@
+#include <iostream>
+#include <typeinfo>
+
+
+//partial specialization은 specialization후  class전부의 member를 다시 써주기 불편하므로 상속을 활용한다.
+//pointer specialization은 typename은 그대로 들어가고 class class명 <T*>로 표기 후 specialization한다.
+using namespace std;
+
+template<typename T>
+void print(T in_data){
+	cout << typeid(in_data).name() << in_data << endl;
+}
+
+template<>											//template specialization. T가 char일때만 실행된다.		templatize된 function만 가능하다.
+void print(char in_data){
+	cout << "CharChar" << in_data << endl;
+}
+
+int main(){
+	print('a');
+}

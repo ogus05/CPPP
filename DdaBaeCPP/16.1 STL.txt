@@ -1,0 +1,32 @@
+
+
+
+C++ StandardTemplateLibriries.
+
+1.Algorithms.
+
+
+
+
+2.Containers.
+
+	1) SequenceContainers. elements can be accessed sequentially.
+		vector : 동적 할당의 표준.
+		deque : vector에서 push_front를 구현했다.
+		
+	2) AssociativeContainers. used to store elements but have some constraints placed on their elements.
+		set : 원소가 중복되지 않는 array. auto sort를 해준다.
+		multiset : set과 같지만 원소가 중복된다.
+		map : 두개의 type(ex. char, int)를 대응시킨다. key를 기준으로 자동으로 정렬해준다.
+		multimap. map과 같지만 한가지 key의 여러개의 value가 들어간다.
+		
+	3) ContainerAdapters
+		stack : 층층이 쌓는 구조. 늦게 push된게 먼저 pop
+		queue : 줄을 서는 구조. 먼저 push된게 먼저 pop
+		priority_queue : queue와 같은데 자동으로 정렬을 해준다. generic type에 class를 넣기 위해서는 <,>operator overloading이 필요하다.
+
+3.Iterators.
+	array의 address를 나타내는 pointer.
+	vector<int>::iterator itr; itr = v.begin() 등으로 선언한다.
+	대부분의 Container에 구현되어있다.
+	

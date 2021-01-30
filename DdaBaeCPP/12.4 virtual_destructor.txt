@@ -1,0 +1,36 @@
+#include <iostream>
+
+using namespace std;
+
+//다형성을 띄는 value를 delete할때는 base pointer를 delete 하는것이 관례이다.
+//하지만 아래와 같은 경우 memory leak이 발생하므로 destructor override를 해줄 수 있다.
+
+class Base{
+	
+public:
+	virtual ~Base(){
+		cout << "~Base()" << endl;
+	}
+};
+
+class Derived : public Base{
+	
+	int* m_mem;
+	
+public:
+	Derived(int in_length){
+		m_mem = new int[in_length];
+	}
+	
+	virtual ~Derived() override {
+		delete[] m_mem;
+		cout << "~Derived()" << endl;
+	}
+};
+
+int main(){
+	Base* base;
+	Derived* derived = new Derived(5);
+	base = derived;
+	delete base;
+}

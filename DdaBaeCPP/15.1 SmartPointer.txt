@@ -1,0 +1,49 @@
+#include <iostream>
+#include <exception>
+#include <typeinfo>
+
+
+//RAII design pattern. Resource Acquisition is Initialization. 획득된 자원을 초기화한다. 자원을 얻고나면 메모리를 꼭 초기화(삭제)해야한다.
+
+using namespace std;
+
+template <typename T>
+class AutoPtr{
+private:
+	T* m_data;
+public:
+	AutoPtr(T* in_data)
+		:m_data(in_data) {};
+	
+	~AutoPtr(){
+		delete m_data;
+	}
+	
+	
+	
+};
+
+class Resource{
+private:
+	int m_data;
+public:
+	Resource(){
+		cout << "Resource Constructor" << endl;
+	}
+	~Resource(){
+		cout << "Resource Destructor" << endl;
+	}
+};
+
+void doSomething(){
+	Resource* re1 = new Resource;					//dull pointer. auto delete불가능. 
+	AutoPtr<Resource> re2(new Resource);			//smart pointer. auto delete가능.
+}
+
+int main(){
+	//auto pointer의 한계. 대입 연산자나 copy constructor를 이용하면 destructor가 2번 호출된다.
+	AutoPtr<Resource> re3(new Resource);
+	AutoPtr<Resource> re4 = re3;
+	//한계를 없애려면 move semantics를 이용한다.		(semantics는 의미를 뜻한다.)
+}
+

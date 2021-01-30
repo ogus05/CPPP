@@ -1,0 +1,45 @@
+#include <iostream>
+#include <memory>
+
+using namespace std;
+
+class Person{
+private:
+	string m_name;
+	//shared_ptr로 선언할때, PartnerUP()에서 각자의 shared_stack이 서로에게 각각 1개씩 더 쌓여서 자동으로 delete가 안된다.(순환 의존성 문제)
+	//weak_ptr은 shared_stack에 직접적으로 관여를 하지 않아 weak_ptr이 남아있어도 shared_stack이 0이되면 delete가 호출된다.
+	weak_ptr<Person> m_Partner;
+public:
+	Person(const string & in_name = nullptr) : m_name(in_name){
+		cout << in_name << " 이 생성되었습니다" << endl;
+	}
+	~Person(){
+		cout << m_name << " 이 삭제되었습니다" << endl;
+	}
+	
+	friend bool PartnerUP(shared_ptr<Person> a, shared_ptr<Person> b){
+		if(a == nullptr|| b == nullptr) return false;
+		else{
+			b->m_Partner = a;
+			a->m_Partner = b;
+			cout << a->m_name << "와 " << b->m_name << "이 파트너가 되었습니다" << endl;
+			return true;
+		}
+	}
+	const string & getName() const{
+		return m_name;
+	}
+	
+	//하지만 weak_ptr은 이런식으로 lock()을 호출하여 shared_ptr로 바꿔주어야만 접근 후 사용이 가능하다.
+	shared_ptr<Person> getPartner(){
+		return m_Partner.lock();
+	}
+};
+
+
+int main(){
+	auto lucy = make_shared<Person>("Lucy");
+	auto ricky = make_shared<Person>("Ricky");
+	PartnerUP(lucy, ricky);
+	cout << lucy->getPartner()->getName() << endl;
+}

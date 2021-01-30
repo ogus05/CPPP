@@ -1,0 +1,50 @@
+#include <iostream>
+
+using namespace std;
+
+//r-value 는 대입시에 오른쪽에만오고, l-value는 둘 다 올 수 있다(memory를 가질 수 있기 때문에 값 대입이 가능해서).
+
+int getResult(){
+	return 100 * 100;
+}
+
+//l-value와r-value를 매개변수나 반환값으로 가지는 함수들은 overloading이 가능하다.
+void doSomething(int& left){
+	cout << "left_value_reference" << endl;
+}
+
+void doSomething(int&& right){
+	cout << "right_value_reference" << endl;
+}
+
+int main(){
+	int x = 1;
+	int y = getResult();
+	
+	const int cx = 6;
+	const int cy = getResult();
+	
+	//left_references. l-value만 reference가 가능하다.
+	
+	int &lr1 = x;				//Modifiable l-value;
+	//int &lr2 = cx;			//Non-Modifiable l-value;
+	//int &lr3 = 5;				//r-value;
+	
+	const int &lr4 = x;			//Modifiable l-value;
+	const int &lr5 = cx;		//Non-Modifiable l-value;
+	const int &lr6 = 5;			//r-value;
+	
+	//right_reference. 곧 사라질 r-value들을 저장해 놓는다.
+	//int &&rr1 = x;				//Modifiable l-value;
+	//int &&rr2 = cx;				//Non-Modifiable l-value;
+	int &&rr3 = 5;					//r-value;
+	
+	//const int &&rr4 = x;				//Modifiable l-value;
+	//const int &&rr5 = cx;				//Non-Modifiable l-value;
+	const int &&rr6 = 5;				//r-value;
+	
+	
+	doSomething(x);
+	doSomething(5);
+	doSomething(getResult());
+}

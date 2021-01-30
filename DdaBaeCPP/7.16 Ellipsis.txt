@@ -1,0 +1,23 @@
+#include <iostream>
+#include <cstdarg>
+
+using namespace std;
+
+double FindAverage(int in_count , ...){									//생략부호 Ellipsis의 형태, ...는 가변인자(개수와 타입이 변함)로 칭한다.
+	double sum = 0;
+	
+	va_list list;														//va_list는 pointer형태.
+	
+	va_start(list, in_count);											//va_start는 ellipsis type의 처음가변인수의 주소를 va_list type의 pointer로 가리키도록 설정.
+	
+	for(int i = 0;i<in_count;i++){
+		sum += va_arg(list,int);										//list를 return하고 intsize만큼 이후로 list가 이동하도록 한다.
+	}
+	
+	
+	return sum / in_count;
+}
+
+int main(){
+	cout << FindAverage(5,2,6,7,8,5);
+}

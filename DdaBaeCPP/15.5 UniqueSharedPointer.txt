@@ -1,0 +1,100 @@
+#include <iostream>
+#include <utility>
+#include <memory>
+
+using namespace std;
+
+//std::move(a)는 a가 r-value로 사용되게끔 강제한다. 
+//STL에는 대부분의 r-value function들이 구현되어있다.
+
+class Resource{
+public:
+	int m_length = 0;
+	int* m_data = nullptr;
+	
+	Resource(){
+		cout << "resource default constructor" << endl;
+	}
+	
+	Resource(int in_length) : m_length(in_length) {
+		cout << "resource length constructor" << endl;
+		m_data = new int[m_length];
+	}
+	
+	Resource(Resource& in_res){
+		cout << "resource copy constructor" << endl;
+		m_length = in_res.m_length;
+		for(int i = 0;i<m_length;i++){
+			m_data[i] = in_res.m_data[i];
+		}
+	}
+	Resource(Resource&& in_res){
+		cout << "resource move constructor" << endl;
+		m_length = in_res.m_length;
+		m_data = in_res.m_data;
+		in_res.m_data = nullptr;
+	}
+	
+	Resource& operator =(Resource& in_res){
+		cout << "resource copy operator" << endl;
+		m_length = in_res.m_length;
+		if(m_data != nullptr) delete[] m_data;
+		for(int i = 0;i<m_length;i++){
+			m_data[i] = in_res.m_data[i];
+		}
+		return *this;
+	}
+	
+	Resource& operator =(Resource && in_res){
+		cout << "resource move operator" << endl;
+		m_length = in_res. m_length;
+		if(m_data != nullptr) delete[] m_data;
+		m_data = in_res.m_data;
+		in_res.m_data = nullptr;
+		return *this;
+	}
+	~Resource(){
+		cout << "resource destructor" << endl;
+		if(m_data != nullptr) delete[] m_data;
+	}
+	
+	void print(){
+		for(int i = 0;i<m_length;i++){
+			cout << m_data << ' ';
+		}
+		cout << endl;
+	}
+};
+
+template<typename T>
+void MySwap(T& a, T&b){
+	T temp = a;
+	a = move(b);
+	b = move(a);
+}
+
+int main(){
+	{
+		//unique_ptr. 가리키는 address의 소유권이 자신에만 속해있게 강제하는 pointer
+		//make_unique로 생성하는 방법이 권장된다.
+		unique_ptr<Resource> uptr1 = make_unique<Resource>(10);
+		//auto ptr2 = ptr1;				//copy semantics는 불가능하다.
+		auto uptr2 = move(uptr1);			//move semantics는 가능하다.
+		uptr2->print();
+	}
+	
+	{
+		//shared_ptr. 가리키는 address의 소유권을 가진 pointer의 개수를 세는 pointer
+		//0이 되면 알아서 delete를 호출한다.
+		
+		//sptr1과 sptr2가 같은 res를 가리킨다는 방법을 알 도리가 없기 때문에 위험한 방법. destructor가 2번 호출된다.
+		Resource* res = new Resource(10);
+		auto sptr1 = shared_ptr<Resource>(res);
+		auto sptr2 = shared_ptr<Resource>(res);
+		
+		//그래서 보통 이렇게 생성한다.
+		auto sptr3 = make_shared<Resource>(20);
+		sptr3->print();
+	}
+	
+}

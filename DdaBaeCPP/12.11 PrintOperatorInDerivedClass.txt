@@ -1,0 +1,32 @@
+#include <iostream>
+
+using namespace std;
+
+//friend function은 member가 아니기때문에 직접 오버라이딩이 불가능하다.
+
+//그래서 base class에 출력 연산자를 선언하고 print를 virtual function로 만들어서 출력 연산자 내부에 print를 return한다.
+
+class Base{
+public:
+	friend ostream & operator << (ostream & out, Base& in_base){
+		return in_base.print(out);
+	}
+	virtual ostream &print(ostream & out){
+		out << "Base";
+		return out;
+	}
+};
+
+class Der : public Base{
+public:
+	virtual ostream &print(ostream & out) override{
+		out << "Der";
+		return out;
+	}
+};
+
+int main(){
+	Der d;
+	Base& b = d; 
+	cout << d << endl;
+}

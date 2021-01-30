@@ -1,0 +1,61 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+#include <string>
+
+using namespace std;
+
+//ASCII File을 다룰때에는 txt로 확인이 가능하지만, File을 Reading하는데 시간이 많이 걸린다.
+//Binary File을 다룰때에는 txt로 확인이 불가능하고, File의 Size를 미리 알고있어야한다.
+
+int main(){
+	
+	//writing
+	if(1){
+		ofstream ofs("my_first_file.dat");						//파일이 없으면 자동으로 파일을 만들어준다. 2번째 Parameter로 ios::app를 넣으면 append가 된다.
+		//ofs.open("my_first_file.dat");
+		
+		if(!ofs){
+			cout << "Couldn't open file" << endl;
+			exit(1);
+		}
+		
+		//ofs << "Line 1" << endl;								//ASCII Code Data Save
+		//ofs << "Line 2" << endl;
+		
+		const unsigned num_data = 10;							//Binary Code Data Save
+		ofs.write((char*)&num_data, sizeof(num_data));			//미리 알고있어야 하므로 가장 첫번째 마디에 size를 저장해 놓은것.
+		for(int i = 0;i<num_data;i++){
+			ofs.write((char*)&i,sizeof(i));
+		}
+		
+		
+	}
+	
+	//reading
+	if(1){
+		ifstream ifs("my_first_file.dat");
+		
+		if(!ifs){
+			cout << "Cannot open file" << endl;
+			exit(1);
+		}
+		
+		/*while(ifs){
+			string str;
+			getline(ifs,str);
+			
+			cout << str << endl;
+		}*/														//ASCII Code Data Read
+		
+		unsigned num_data = 10;
+		ifs.read((char*)&num_data, sizeof(num_data));			//첫번째 마디의 size를 num_data에 저장하는것.							seekg, tellg로 구현가능.
+		
+		for(unsigned i = 0;i<num_data;i++){
+			int num;
+			ifs.read((char*)&num, sizeof(num));
+			cout << num << endl;
+		}
+		
+	}
+}

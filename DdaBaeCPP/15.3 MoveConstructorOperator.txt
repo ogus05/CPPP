@@ -1,0 +1,98 @@
+#include <iostream>
+
+using namespace std;
+
+class Resource{
+private:
+	int m_length = 0;
+	int* m_data = nullptr;
+public:
+	Resource(){
+		cout << "Resource default constructor" << endl;
+	}
+	Resource(int in_length)
+		:m_length(in_length){
+			cout << "Resource length constructor" << endl;
+			m_data = new int[m_length];
+	}
+	Resource(Resource& in_res){
+		cout << "Resource copy constructor" << endl;
+		//deep copy
+		Resource(in_res.m_length);
+		for(int i = 0;i<m_length;i++){
+			m_data[i] = in_res.m_data[i];
+		}
+	}
+	~Resource(){
+		cout << "Resource default destructor" << endl;
+		if(m_data != nullptr) delete[] m_data;
+	}
+	
+	Resource & operator = (Resource & in_res){
+		cout << "Resource copy operator" << endl;
+		if(&in_res == this) return *this;
+		else{
+			delete[] m_data;
+			//deep copy
+			m_length = in_res.m_length;
+			m_data = new int[m_length];
+			for(int i = 0;i<m_length;i++){
+				m_data[i] = in_res.m_data[i];
+			}
+			return *this;
+		}
+	}
+};
+
+template<typename T>
+class AutoPtr{
+private:
+	T* m_data;
+public:
+	AutoPtr(T* in_data = nullptr) : m_data(in_data) {
+		cout << "AutoPtr default constructor" << endl;
+	}
+	
+	AutoPtr(AutoPtr && in_ptr) : m_data(in_ptr.m_data){
+		cout << "AutoPtr move constructor" << endl;
+		
+		//어차피 곧 사라지긴 하지만 혹시 몰라서 넣는 nullptr
+		in_ptr.m_data = nullptr;
+	}
+	
+	//copy operator는 Resource class의 deep copy를 호출하는 반면,
+	//move operator는 shallow copy를 이용하여 시간을 훨씬 단축한다.
+	AutoPtr& operator=(AutoPtr& in_ptr){
+		cout << "AutoPtr copy operator" << endl;
+		
+		*this = in_ptr;
+	}
+	AutoPtr& operator=(AutoPtr&& in_ptr){
+		cout << "AutoPtr move operator" << endl;
+		
+		if(&in_ptr == this) return *this;
+		if(m_data != nullptr) delete m_data;
+		
+		//l-value는 다른 곳에서 꾸준히 사용되는 반면 r-value는 사라져도 아무도 쓰지 않으니 nullptr로 설정해도 상관없다.
+		//shallow copy
+		m_data = in_ptr.m_data;
+		in_ptr.m_data = nullptr;
+		
+		return *this;
+	}
+	
+	~AutoPtr(){
+		cout << "AutoPtr default destructor" << endl;
+		if(m_data != nullptr) delete m_data;
+	}
+};
+
+AutoPtr<Resource> generateResource(){
+	AutoPtr<Resource> res(new Resource(1000000));
+	return res;
+}
+
+int main(){
+	AutoPtr<Resource> main_res;
+	main_res = generateResource();
+}

@@ -1,0 +1,61 @@
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main(){
+	/*{
+		char buf[5];
+
+		//setw(a). a만큼의 input을 buffer로부터 받아옴. 받아오지 않은 input들은 아직 buf에 남아있고, 이는 다음 cin때 호출;
+		cin >> setw(5) >> buf;
+		cout << buf << endl;
+
+		cin >> setw(5) >> buf;
+		cout << buf << endl;
+
+		cin >> setw(5) >> buf;
+		cout << buf << endl;
+	}*/
+	
+	/*{
+	char ch;
+	//한글자씩 입력받기. 띄어쓰기가 사라진다. 띄어쓰기를 무시하지 않으려면 cin.get(ch)를 사용하면 된다.
+	while(cin >> ch)
+		cout << "호출 : " << (int)ch << endl;
+	}*/
+	
+	/*{
+		char ch[10];
+		
+		//getline. 한 라인씩 입력받기 \n이 들어오면 flush로 buffer에 남은것들을 싹 없애버린다.
+		//gcount. 한번에 입력받은 개수를 출력한다.
+		cin.getline(ch, 5);
+		cout << cin.gcount() << " " << ch << endl;
+
+		cin.getline(ch, 5);
+		cout << cin.gcount() << " " << ch << endl;
+	}*/
+	
+	{
+		string str;
+		
+		//buffer의 앞 문자 2개를 무시한다.
+		cin.ignore(2);
+		
+		//buffer의 앞 문자가 뭔지 확인한다.
+		cout << (char)cin.peek() << endl;
+		
+		//buffer의 앞에 A를 넣는다.
+		cin.putback('A');
+		
+		//buffer에서 문자를 꺼내 str에 저장한다.
+		getline(cin,str);
+		
+		//마지막에 buffer에서 꺼낸 문자를 다시 buffer에 넣는다.
+		cin.unget();
+		
+		cout << str << endl;
+	}
+	
+}

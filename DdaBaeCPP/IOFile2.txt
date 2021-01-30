@@ -1,0 +1,32 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main(){
+	string filename("my_second_file");
+	
+	ofstream ofs(filename);
+	
+	outfile.write ("This is an apple",16);
+	long pos = outfile.tellp();												//Current Prompt.
+	outfile.seekp (pos-7);													//Prompt를 7만큼 앞으로 이동하고 
+	outfile.write (" sam",4);												//4글자를 " sam"으로 교체한다.
+	
+	ifstream ifs(filename);
+	
+	ifs.seekg(0,ifs.end);													//tellg와 seekg로 length구하는 법.
+	unsigned length = ifs.tellg();											//seekg는 2번째 Parameter부터 1번째 Parameter만큼 떨어진 곳으로 이동한다.
+	ifs.seekg(0,ifs.beg);
+	
+	string s;
+	
+	ifs.seekg(5);															//현재 커서를 5번째로 이동하니 5번째값부터 쭉 불러온다.
+	
+	getline(ifs,s);															//string으로 불러오기.
+	
+	
+	cout << s << endl;
+	
+}

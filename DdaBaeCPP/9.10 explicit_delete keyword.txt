@@ -1,0 +1,21 @@
+#include <iostream>
+
+using namespace std;
+
+class Fraction{
+public:
+	int a,b;
+public:
+	Fraction(char) = delete;					//이런식으로 delete를 넣으면 doSomething('a')등을 미리 방지 가능하다.
+	
+	Fraction(int in_a = 1, int in_b = 2)		//생성자 앞에 explicit keyword를 넣으면 변환생성자를 막을 수 있다.
+		:a(in_a),b(in_b){}
+};
+
+int doSomething(Fraction f){
+	return f.b;
+}
+
+int main(){
+	cout << doSomething(10) << endl;	//변환생성자.
+}

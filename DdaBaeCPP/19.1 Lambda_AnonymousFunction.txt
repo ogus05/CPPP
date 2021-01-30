@@ -1,0 +1,46 @@
+#include <iostream>
+#include <string>
+#include <functional>
+#include <algorithm>
+
+using namespace std;
+
+//lambda function, anonymous function, std::function, std::bind, std::placeholders
+
+double my_div(int x, int y){
+	return x/y;
+}
+
+class Object{
+public:
+	void hello(){
+		cout << "Hello, Object!" << endl;
+	}
+};
+
+int main(){
+	auto func = [](const int& i) -> void { cout << "Hello, World!" << endl;};						//lambda function declaration
+	func(1);
+
+	[](const int&i) -> void {cout << "Hello, World!" << endl;}(1);									//anonymous lambda function
+	{
+		string name = "HH";
+		string name2 = "22";
+		[&]() -> void{cout << name2 << endl;}();													//lambda introducer. []
+																									//[&] -> references all values in scope, [=] -> assignment all values in scope, can [&name, =name2];
+	}
+	
+	vector<int> v; v.push_back(2); v.push_back(3);
+	for_each(v.begin(), v.end(), [](const int &i){cout << i << endl;});								//Using anonymous function in for_each function.
+																									//if return type of lambda function was void, omitting return type is enable.
+	
+	function<void(int)> func2 = func;
+	func2(1);
+	
+	auto func3 = bind(my_div, placeholders::_1, placeholders::_2);									//10 in placeholders::_1, 5 in placeholders::_2 
+	cout << func3(10,5) << endl;
+	
+	Object obj;
+	auto func4 = bind(&Object::hello, &obj);														//to bind class function
+	func4();	
+}

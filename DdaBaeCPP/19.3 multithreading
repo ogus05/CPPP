@@ -1,0 +1,32 @@
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <mutex>
+
+using namespace std;
+
+//process. OS이 program을 실행할때 관리하는 단위.
+//1개의 process가 여러개의 thread를 관리한다.
+//multi processing. 1개의 program이 여러개의 thread를 만들어서 여러개의 core을 동시에 활용해서 효율성을 높인다.
+//multi thrading. 1개의 CPU에 여러가지 core를 작동시킨다.(요즘대세), 여러가지 thread들이 Memory를 공유한다.
+//CPU는 자동으로 multi threading을 지원하지 않고 coding으로 구현해야한다.
+
+int main(){
+
+    mutex mtx;  //mutual exclusion
+
+    auto work_func = [&](const string & name){
+        for(int i = 0;i<5;i++){
+            this_thread::sleep_for(chrono::milliseconds(100));
+            mtx.lock();         //같은 줄이 여러개의 thread에서 한번에 실행되지 않게한다.
+            cout << name << " " << this_thread::get_id() << " is working" << endl;
+            mtx.unlock();
+        }
+    };
+
+    thread t1 = thread(work_func, "JackJack");
+    thread t2 = thread(work_func, "Dash");
+
+    t1.join();
+    t2.join();
+}

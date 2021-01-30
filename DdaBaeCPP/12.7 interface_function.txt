@@ -1,0 +1,33 @@
+#include <iostream>
+
+using namespace std;
+
+class I{										//interface class. pure virtual function 밖에 존재하지 않는다.
+public:
+	virtual void printType() = 0;
+	
+	virtual ~I(){};
+};
+
+class A : public I{
+public:
+	virtual void printType() override{
+		cout << "A" << endl;
+	}
+};
+
+class B : public I{
+	public:
+	virtual void printType() override{
+		cout << "B" << endl;
+	}
+};
+
+void Print(I& in_i){							//이러한 function 등의 다형성을 지원하기 위해 만들어졌다.
+	in_i.printType();
+}
+
+int main(){
+	Print(*(new A()));
+	Print(*(new B()));
+}

@@ -1,0 +1,38 @@
+#include <iostream>
+#include <regex>					//regular expressions
+
+using namespace std;
+
+int main(){
+	//regex re("\\d");				// 첫번째 \ 는 두번째 \가 string으로 입력되도록 해주는 기능, \d는 숫자를 뜻한다.
+									//뒤에 +가 붙으면 한글자 이상, *이면 입력을 안받아도 괜찮다는 뜻(wild card)
+	//regex re("[[:digit:]]{3}");	//첫번째 대괄호는 괄호 안에 쓰인 것들은 괜찮다이고 [:digit:]는 숫자 전체를 뜻한다. {3}는 세 글자가 오면 괜찮다이다.
+									//print matches에서 smatch는 3개씩 끊어서 읽는다.
+	//regex re("[A-Z]{1,5}");		//A부터Z까지 1개~5개이면 match
+	
+	//regex re("([[:digit:]])([-]?)([0-9]{1,4})");	//?는 있어도 되고 없어도 된다는 뜻.
+	regex re("\\w");
+	string str;
+	
+	while(true){
+		getline(cin,str);
+		
+		if(regex_match(str,re)){
+			cout << "Match" << endl;
+		}
+		else{
+			cout << "No Match" << endl;
+		}
+		
+		//print matches
+		{
+			auto begin = std::sregex_iterator(str.begin(), str.end(),re);
+			auto end = sregex_iterator();
+			for(auto itr = begin;itr != end;itr++){
+				smatch match = *itr;
+				cout << match.str() << " ";
+			}
+			cout << endl;
+		}
+	}
+}

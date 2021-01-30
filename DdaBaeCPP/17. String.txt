@@ -1,0 +1,49 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+
+using namespace std;
+
+//wchar_t. datasize가 wide한 char.
+//wstring. wchar_t를 배열로하여 만든 string. 제2외국어를 구현할때 주로 사용한다.
+
+//cstyle string은 char array이기 때문에 마지막을 구분하기 위해 nullptr이 추가되는데,("Hello!")
+//c++style string은 class이고, 내부에 m_length가 있기 때문에 nullptr이 추가되지 않는다.string str("Hello!");
+//c++style string은 vector와 마찬가지로 capacity()와 reserve()가 있다.
+//string.at(index)는 string[index]와 다르게 exception을 throw해준다.
+
+
+//stringstream을 이용한 문자열 변환.
+template<typename T>
+string ToString(T in_data){
+	ostringstream oss;
+	oss << in_data;
+	return oss.str();
+}
+
+template<typename T>
+bool FromString(string& in_str, T& in_data){
+	istringstream iss(in_str);
+	return (iss >> in_data) ? true : false;
+}
+
+int main(){
+	//iterator를 이용한 string initialization. 
+	vector<char> v;
+	for(auto e : "Hello!"){
+		v.push_back(e);
+	}
+	string str1(v.begin(), v.end());
+	cout << str1 << endl;
+
+	int i1;
+	string str4("Hello");
+	
+	if(FromString<int>(str4, i1)){
+		cout << "변환 가능 : " << i1 << endl; 
+	}
+	else{
+		cout << "변환 불가능" << endl;
+	}
+}
