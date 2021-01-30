@@ -1,0 +1,51 @@
+#include <iostream>
+#include <future>
+#include <thread>
+#include <utility>
+
+using namespace std;
+
+int main(){
+    //multi-threading
+    {
+        int result;
+        thread t([&]{result = 1 + 2;});
+        t.join();
+        cout << result << endl;
+    }
+
+    //task-based parallelism
+    {
+        future<int> fut = async([]{return 1 + 2;});            //일반적으로 thread보단 async를 선호한다.
+        cout << fut.get() << endl;                             //async안의 lambda식의 계산이 끝날때까지 기다린다.
+                                                               //thread와의 차이는 join을 기다리냐, get()을 기다리냐이다.
+    }
+    //future and promise
+    {
+        promise<int> prom;
+        auto fut = prom.get_future();
+
+        auto t = thread([](promise<int>&& prom){               //promise는 parameter로 r-value를 넣어줘야한다.
+            prom.set_value(1+2);                               //set_value를 통해 값을 받을 때 까지
+        }, move(prom));
+
+        cout << fut.get() << endl;                             //future가 기다린다.
+        t.join();                                              //futre가 promise를 기다리긴 하지만 thread.join()은 있어야한다.
+    }
+
+    {
+        async([](){                                            //async를 변수로 받지 않을시 그냥 순차적으로 실행된다.
+            cout << "async1 Start" << endl;
+            this_thread::sleep_for(chrono::seconds(2));
+            cout << "async1 End" << endl;
+        });
+
+        async([](){
+            cout << "async2 Start" << endl;
+            this_thread::sleep_for(chrono::seconds(1));
+            cout << "async2 End" << endl;
+        });
+        cout << "MainEnd" << endl;
+    }
+
+}

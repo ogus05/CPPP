@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <utility>
+
+using namespace std;
+
+struct CustomVector{
+public:
+    unsigned n_data = 0;
+    int *ptr = nullptr;
+
+    CustomVector(const unsigned & in_data, const int & in_init = 0){
+        cout << "Constructor" << endl;
+        init(n_data,in_init);
+    }
+
+    CustomVector(CustomVector & l_input){
+        cout << "Copy constructor" << endl;
+        init(l_input.n_data, 0);
+        for(unsigned i = 0;i<n_data;i++){
+            ptr[i] = l_input.ptr[i];
+        }
+    }
+
+    CustomVector(CustomVector && r_input){
+        cout << "Move constructor" << endl;
+        n_data = r_input.n_data;
+        ptr = r_input.ptr;
+        r_input.n_data = 0;
+        r_input.ptr = nullptr;
+    }
+
+    ~CustomVector(){
+        delete[] ptr;
+    }
+
+    void init(const unsigned & in_data, const int & in_init){
+        n_data = in_data;
+        ptr = new int[n_data];
+        for(unsigned i = 0;i<n_data;i++){
+            ptr[i] = in_init;
+        }
+    }
+};
+
+void func(CustomVector& v){
+    cout << "Pass by L-ref" << endl;
+    CustomVector new_v(v);
+}
+
+void func(CustomVector&& v){
+    cout << "Pass by R-ref" << endl;
+    CustomVector new_v(move(v));
+}
+
+template<typename T>
+void func2(T t){
+    func(forward<T>(t));                                            //perfectforwarding. forward keyword prevents R-value's changing to L-value when templatize
+}
+
+int main(){
+    CustomVector my_vec(10, 1024);
+
+    func2<CustomVector>(my_vec);
+    func2<CustomVector>(CustomVector(10,8));
+}
