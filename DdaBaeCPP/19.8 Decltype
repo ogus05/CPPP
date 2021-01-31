@@ -1,0 +1,31 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class Example{
+    public:
+    template<typename T, typename S>
+    void ex1(T lhs, S rhs){
+        auto prod1 = lhs * rhs;                     //auto가 아니면 prod1의 type을 추론하기 어렵다.
+        //typedef typeof(lhs * rhs) product_type    //옛 프로그래머들에게 해결하는 방법으로 typeof가 있었다,
+        typedef decltype(lhs * rhs) product_type;   //요즘은 decltype keyword가 주가 되었다.
+        product_type prod2 = lhs * rhs;
+        decltype(lhs * rhs) prod3;                  //요로케도가능.
+    }
+
+    void ex2(){
+        //generic lambda function
+        auto lambda = [](auto a, auto b){
+            return a + b;
+        };
+
+        cout << lambda(2,4) << endl;
+    }
+};
+
+int main(){
+    Example ex;
+    ex.ex2();
+}
